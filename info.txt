@@ -2,3 +2,4 @@
 12-5-18 --- 05:00am --- Created Github repo and made first commit and push
 12-6-18 --- 05:10am --- Pushed to Github and deployed to surge again, everything is still working
 12-7-18 --- 06:20am --- Pushed to Github and deployed to surge, finished lecture 86
+12-8-18 --- 06:00am --- Pushed to github and redeployed to surge
