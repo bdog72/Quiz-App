@@ -160,7 +160,8 @@ var quizController = (function() {
       console.log(newPerson);
     },
     getCurrPersonData: currPersonData,
-    getAdminFullName: adminFullName
+    getAdminFullName: adminFullName,
+    getPersonLocalStorage: personLocalStorage
   };
 })();
 
@@ -181,6 +182,7 @@ var UIController = (function() {
     questUpdateBtn: document.getElementById('question-update-btn'),
     questDeleteBtn: document.getElementById('question-delete-btn'),
     questsClearBtn: document.getElementById('questions-clear-btn'),
+    resultsListWrapper: document.querySelector('.results-list-wrapper'),
     //*******Quiz Section Elements*********/
     quizSection: document.querySelector('.quiz-container'),
     askedQuestText: document.getElementById('asked-question-text'),
@@ -464,6 +466,51 @@ var UIController = (function() {
         currPerson.score;
       domItems.quizSection.style.display = 'none';
       domItems.finalResultSection.style.display = 'block';
+    },
+    addResultOnPanel: function(userData) {
+      var resultHTML;
+
+      domItems.resultsListWrapper.innerHTML = '';
+
+      for (var i = 0; i < userData.getPersonData().length; i++) {
+        resultHTML =
+          '<p class="person person-' +
+          i +
+          '"><span class="person-' +
+          i +
+          '">' +
+          userData.getPersonData()[i].firstname +
+          ' ' +
+          userData.getPersonData()[i].lastname +
+          ' - ' +
+          userData.getPersonData()[i].score +
+          ' Points</span><button id="delete-result-btn_' +
+          userData.getPersonData()[i].id +
+          '" class="delete-result-btn">Delete</button></p>';
+
+        domItems.resultsListWrapper.insertAdjacentHTML(
+          'afterbegin',
+          resultHTML
+        );
+      }
+    },
+
+    deleteResult: function(event, userData) {
+      var getId, personsArr;
+
+      personsArr = userData.getPersonData();
+
+      if ('delete-result-btn_'.indexOf(event.target.id)) {
+        getId = parseInt(event.target.id.split('_')[1]);
+
+        for (var i = 0; i < personsArr.length; i++) {
+          if (personsArr[i].id === getId) {
+            personsArr.splice(i, 1);
+
+            userData.setPersonData(personsArr);
+          }
+        }
+      }
     }
   };
 })();
@@ -563,5 +610,13 @@ var controller = (function(quizCtrl, UICtrl) {
         );
       }
     });
+  });
+
+  UICtrl.addResultOnPanel(quizCtrl.getPersonLocalStorage);
+
+  selectedDomItems.resultsListWrapper.addEventListener('click', function(e) {
+    UICtrl.deleteResult(e, quizCtrl.getPersonLocalStorage);
+
+    UICtrl.addResultOnPanel(quizCtrl.getPersonLocalStorage);
   });
 })(quizController, UIController);
